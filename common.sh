@@ -19,13 +19,13 @@ SUCKLESS=(dwm st dmenu slock slstatus)
 # question which JACK to use; its default, jack2, would sit next to PipeWire
 # instead of using it.
 ARCH_PACKAGES=(
-    base-devel libx11 libxft libxinerama libxrandr libxext libxres libxcb freetype2 fontconfig
+    base-devel libx11 libxft libxinerama libxrandr libxext libxres libxcb freetype2 fontconfig harfbuzz
     xorg-server xorg-xinit xorg-xsetroot xorg-xset xorg-xrandr xorg-xrdb xf86-input-libinput
-    xss-lock xwallpaper unclutter dunst libnotify
+    xss-lock xwallpaper unclutter dunst libnotify xcompmgr
     pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber libpulse
     xdg-desktop-portal-gtk lxqt-policykit
     networkmanager bluez bluez-utils blueman
-    maim slop xclip xdotool xdg-user-dirs brightnessctl playerctl psmisc bc file ffmpeg
+    maim slop xclip xdotool xdg-user-dirs xdg-utils brightnessctl playerctl psmisc bc file ffmpeg
     ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
     adwaita-icon-theme adwaita-cursors dconf
     neovim thunar librewolf

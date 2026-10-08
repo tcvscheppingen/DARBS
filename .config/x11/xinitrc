@@ -27,6 +27,8 @@ xset s 300 300
 xset dpms 600 600 600
 xss-lock -- slock &
 
+# The compositor, so st's background can be transparent
+xcompmgr &
 dunst &
 slstatus &
 # Hides the mouse cursor when it hasn't moved for a moment

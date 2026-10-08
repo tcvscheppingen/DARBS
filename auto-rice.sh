@@ -32,15 +32,15 @@ install_fedora() {
     sudo dnf install \
         gcc make pkgconf-pkg-config \
         libX11-devel libXft-devel libXinerama-devel libXrandr-devel libXext-devel \
-        libXres-devel libxcb-devel freetype-devel fontconfig-devel libxcrypt-devel \
+        libXres-devel libxcb-devel libXrender-devel freetype-devel fontconfig-devel harfbuzz-devel libxcrypt-devel \
         xcb-util-devel xcb-util-image-devel pixman-devel libjpeg-turbo-devel libpng-devel \
         libXpm-devel libseccomp-devel \
         xorg-x11-server-Xorg xorg-x11-xinit xsetroot xset xrandr xrdb xorg-x11-drv-libinput \
-        xss-lock unclutter dunst libnotify \
+        xss-lock unclutter dunst libnotify xcompmgr \
         pipewire pipewire-pulseaudio pipewire-alsa wireplumber pulseaudio-utils \
         xdg-desktop-portal-gtk lxqt-policykit \
         NetworkManager NetworkManager-tui bluez blueman \
-        maim slop xclip xdotool xdg-user-dirs brightnessctl playerctl psmisc bc file /usr/bin/ffmpeg \
+        maim slop xclip xdotool xdg-user-dirs xdg-utils brightnessctl playerctl psmisc bc file /usr/bin/ffmpeg \
         google-noto-sans-fonts google-noto-color-emoji-fonts \
         adwaita-icon-theme adwaita-cursor-theme dconf \
         neovim Thunar librewolf curl tar xz

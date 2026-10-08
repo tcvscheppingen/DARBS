@@ -2,7 +2,7 @@
 
 /* Constants */
 #define TERMINAL "st"
-#define TERMCLASS "st-256color"
+#define TERMCLASS "St"
 #define BROWSER "librewolf"
 #define FILEMANAGER "thunar"
 

@@ -2,7 +2,7 @@
 
 ![dwm with a floating fastfetch window, Neovim and a shell](screenshot.png)
 
-My dotfiles for dwm, st, dmenu, slock, slstatus and dunst in the [gruvbox](https://github.com/morhetz/gruvbox) dark palette: [dwm](https://dwm.suckless.org) 6.8 with the vanitygaps, swallow and stacker patches, 3px yellow borders and a plain text status bar.
+My dotfiles for dwm, st, dmenu, slock, slstatus and dunst in the [gruvbox](https://github.com/morhetz/gruvbox) dark palette: [dwm](https://dwm.suckless.org) 6.8 with the vanitygaps, swallow and stacker patches, 3px yellow borders and a plain text status bar. st is [Luke Smith's build](https://github.com/LukeSmithxyz/st), with his patches.
 
 The key bindings are from [Luke Smith's dwm](https://github.com/LukeSmithxyz/dwm), and `sysact`, `displayselect`, `dmenurecord`, `maimpick` and `setbg` are his scripts from [voidrice](https://github.com/LukeSmithxyz/voidrice).
 
@@ -19,7 +19,7 @@ cd DARBS
 ```
 
 Then reboot. The script:
-- installs Xorg, PipeWire, NetworkManager, Bluetooth, dunst, xss-lock, xwallpaper, unclutter, fonts, LibreWolf, Thunar, Neovim and the build dependencies (see `common.sh` and `auto-rice.sh` for the package lists)
+- installs Xorg, the xcompmgr compositor, PipeWire, NetworkManager, Bluetooth, dunst, xss-lock, xwallpaper, unclutter, fonts, LibreWolf, Thunar, Neovim and the build dependencies (see `common.sh` and `auto-rice.sh` for the package lists)
 - backs up the configs it replaces to `~/.config/gruvbox-rice-backup-<date>/`
 - copies the dotfiles to `~/.config` and `~/.local`, then builds dwm, st, dmenu, slock and slstatus in `~/.local/src` and installs them to `/usr/local`
 - offers to start dwm when you log in on TTY1
@@ -36,7 +36,7 @@ if [ -z "$DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR" -eq 1 ]; then
     exec startx "$HOME/.config/x11/xinitrc"
 fi
 ```
-`xinitrc` sets the wallpaper and starts slstatus, dunst, unclutter, xss-lock and dwm.
+`xinitrc` sets the wallpaper and starts xcompmgr, slstatus, dunst, unclutter, xss-lock and dwm.
 
 ## Patches
 
@@ -44,6 +44,14 @@ The patched source is in `.local/src/dwm`, with the patch files in `patches/`.
 - [vanitygaps](https://dwm.suckless.org/patches/vanitygaps/): gaps in every layout (10px between windows, 30px at the left and right edges) and extra layouts such as bstack, spiral, deck and centered master.
 - [swallow](https://dwm.suckless.org/patches/swallow/): a program started from st takes the terminal's place until it closes.
 - [stacker](https://dwm.suckless.org/patches/stacker/): move windows up and down the stack with the keyboard.
+
+st in `.local/src/st` is [Luke Smith's st](https://github.com/LukeSmithxyz/st) (st 0.8.5, commit `48b8ee6`) with this rice's font and gruvbox cursor colors. His patches are merged into the source, so there are no patch files:
+- scrollback, with the mouse wheel and the keyboard
+- zoom: change the font size with the keyboard
+- alpha: a transparent background (0.8 opacity, as in Luke's build), drawn by the xcompmgr compositor
+- xresources: font, colors and alpha can be set in Xresources
+- externalpipe, with `st-urlhandler` and `st-copyout`: open or copy a URL, or copy a command's output, from a dmenu list
+- boxdraw, ligatures (with HarfBuzz) and font2 (color emoji from Noto Color Emoji)
 
 **unclutter** is the program that hides an idle mouse cursor, not a dwm patch.
 
@@ -73,6 +81,17 @@ The patched source is in `.local/src/dwm`, with the patch files in `patches/`.
 | `Print` / `shift + Print` | Screenshot / screenshot menu (`maimpick`) |
 | `mod + Print` / `mod + Delete` | Start / stop a recording (`dmenurecord`) |
 | `mod` + left / right drag | Move / resize a window |
+
+In st, `alt` is the modifier:
+
+| Keys | Action |
+|---|---|
+| `alt + k/j`, `alt + Up/Down` / `alt + u/d`, `alt + PageUp/PageDown` | Scroll up or down a line / a page (also the mouse wheel) |
+| `alt + shift + k/j` / `alt + Home` | Zoom in or out / reset the font size |
+| `alt + c` / `alt + v`, `shift + Insert` | Copy / paste |
+| `alt + l` / `alt + y` | Open / copy a URL on the screen |
+| `alt + o` | Copy a command's output |
+| `alt + a` / `alt + s` | More / less opaque |
 
 ## Customizing
 
