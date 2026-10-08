@@ -1,0 +1,47 @@
+#!/bin/sh
+# Started by startx (see "Starting dwm on login" in the README). Starts what
+# dwm doesn't start itself, then dwm.
+
+export PATH="$HOME/.local/bin:$PATH"
+
+xrdb -merge ~/.config/x11/xresources
+xsetroot -cursor_name left_ptr
+# Sets the wallpaper that ~/.local/share/bg links to
+setbg
+
+# GTK 4 apps read their theme from gsettings; GTK 3 apps read
+# ~/.config/gtk-3.0/settings.ini
+gnome_schema=org.gnome.desktop.interface
+gsettings set $gnome_schema color-scheme 'prefer-dark'
+gsettings set $gnome_schema gtk-theme 'Adwaita-dark'
+gsettings set $gnome_schema icon-theme 'Adwaita'
+gsettings set $gnome_schema cursor-theme 'Adwaita'
+gsettings set $gnome_schema cursor-size 24
+
+# --systemd only where systemd runs; Artix with dinit has none
+dbus-update-activation-environment $([ -d /run/systemd/system ] && echo --systemd) DISPLAY XAUTHORITY
+
+# Lock after 5 minutes without input, turn the displays off after 10, and
+# lock before the computer goes to sleep
+xset s 300 300
+xset dpms 600 600 600
+xss-lock -- slock &
+
+dunst &
+slstatus &
+# Hides the mouse cursor when it hasn't moved for a moment
+unclutter &
+# Fedora keeps the agent in /usr/libexec
+if command -v lxqt-policykit-agent > /dev/null; then
+    lxqt-policykit-agent &
+else
+    /usr/libexec/lxqt-policykit-agent &
+fi
+
+# sysact ends dwm with SIGTERM for "leave dwm" and SIGHUP for "renew dwm".
+# Start dwm again after SIGHUP (exit status 128 + 1), so renewing loads a new
+# build and keeps the open windows. Anything else ends the X session.
+while :; do
+    dwm
+    [ $? -eq 129 ] || break
+done

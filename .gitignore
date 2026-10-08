@@ -1,0 +1,12 @@
+.vscode/
+.DS_Store
+
+# Build output of the suckless programs
+.local/src/*/*.o
+.local/src/*/*/*.o
+.local/src/dwm/dwm
+.local/src/st/st
+.local/src/dmenu/dmenu
+.local/src/dmenu/stest
+.local/src/slock/slock
+.local/src/slstatus/slstatus

@@ -1,0 +1,16 @@
+#!/bin/sh
+# Network block for slstatus: the connection that has the default route, like
+# waybar's network module in the sway rice.
+
+dev=$(ip route show default 2> /dev/null | awk '{ print $5; exit }')
+
+if [ -z "$dev" ]; then
+    echo 'wifi down'
+elif [ -d "/sys/class/net/$dev/wireless" ]; then
+    ssid=$(nmcli -g GENERAL.CONNECTION device show "$dev" 2> /dev/null)
+    # /proc/net/wireless gives the link quality out of 70
+    signal=$(awk -v dev="$dev:" '$1 == dev { printf "%d", $3 * 100 / 70 }' /proc/net/wireless)
+    echo "wifi ${ssid:-$dev} ${signal:-0}%"
+else
+    echo "eth $dev"
+fi

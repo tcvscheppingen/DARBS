@@ -1,0 +1,14 @@
+#!/bin/sh
+# Battery block for slstatus. Prints nothing on machines without a battery.
+
+for battery in /sys/class/power_supply/BAT*; do
+    [ -e "$battery/capacity" ] || continue
+    capacity=$(cat "$battery/capacity")
+    case "$(cat "$battery/status")" in
+        Full) echo ' | bat full' ;;
+        Charging) echo " | bat $capacity% chr" ;;
+        'Not charging') echo " | bat $capacity% ac" ;;
+        *) echo " | bat $capacity%" ;;
+    esac
+    exit
+done

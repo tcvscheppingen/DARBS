@@ -1,0 +1,5 @@
+#!/bin/sh
+# Recording block for slstatus: the icon dmenurecord sets while it records
+
+icon=$(cat /tmp/recordingicon 2> /dev/null)
+[ -n "$icon" ] && echo " | $icon"
