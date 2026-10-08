@@ -1,6 +1,5 @@
 #!/bin/sh
-# Network block for slstatus: the connection that has the default route, like
-# waybar's network module in the sway rice.
+# Network block for slstatus: the connection that has the default route
 
 dev=$(ip route show default 2> /dev/null | awk '{ print $5; exit }')
 

@@ -65,9 +65,8 @@ static const char unknown_str[] = "";
  * wifi_essid          WiFi ESSID                      interface name (wlan0)
  * wifi_perc           WiFi signal in percent          interface name (wlan0)
  */
-/* The same blocks as the waybar of the sway rice. The scripts in
- * ~/.local/bin/statusbar print their own "| " separator, so they can leave
- * the block out entirely. */
+/* The scripts in ~/.local/bin/statusbar print their own "| " separator, so
+ * they can leave the block out entirely. */
 static const struct arg args[] = {
 	/* function format          argument */
 	{ run_command, "%s",        "~/.local/bin/statusbar/sb-network" },
