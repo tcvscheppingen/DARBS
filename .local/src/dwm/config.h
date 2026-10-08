@@ -81,6 +81,10 @@ static const Layout layouts[] = {
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
+#define STACKKEYS(MOD,ACTION) \
+	{ MOD,                          XK_j,     ACTION##stack,  {.i = INC(+1) } }, \
+	{ MOD,                          XK_k,     ACTION##stack,  {.i = INC(-1) } }, \
+	{ MOD,                          XK_v,     ACTION##stack,  {.i = 0 } },
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
@@ -94,11 +98,12 @@ static const char *termcmd[]  = { TERMINAL, NULL };
 #include <X11/XF86keysym.h>
 
 /* Luke Smith's key bindings (https://github.com/LukeSmithxyz/dwm), limited
- * to stock dwm, vanitygaps and swallow, and to the programs of this rice */
+ * to stock dwm, vanitygaps, swallow and stacker, and to the programs of this
+ * rice */
 static const Key keys[] = {
 	/* modifier                     key              function            argument */
-	{ MODKEY,                       XK_j,            focusstack,         {.i = +1 } },
-	{ MODKEY,                       XK_k,            focusstack,         {.i = -1 } },
+	STACKKEYS(MODKEY,                                focus)
+	STACKKEYS(MODKEY|ShiftMask,                      push)
 	TAGKEYS(                        XK_1,                                0)
 	TAGKEYS(                        XK_2,                                1)
 	TAGKEYS(                        XK_3,                                2)

@@ -6,7 +6,7 @@ Every part of the Sway rice is replaced by its suckless equivalent:
 
 | Sway rice | This rice |
 |---|---|
-| Sway | [dwm](https://dwm.suckless.org) 6.8 with the vanitygaps and swallow patches |
+| Sway | [dwm](https://dwm.suckless.org) 6.8 with the vanitygaps, swallow and stacker patches |
 | Foot | [st](https://st.suckless.org) |
 | wmenu | [dmenu](https://tools.suckless.org/dmenu) |
 | swaylock | [slock](https://tools.suckless.org/slock) |
@@ -16,7 +16,7 @@ Every part of the Sway rice is replaced by its suckless equivalent:
 | mako | dunst (suckless has no notification daemon) |
 | grim, slurp and wf-recorder | maim, slop and ffmpeg |
 
-The key bindings are the ones from [Luke Smith's dwm](https://github.com/LukeSmithxyz/dwm), limited to what dwm, vanitygaps and swallow can do (see [Key bindings](#key-bindings)). The `sysact`, `displayselect`, `dmenurecord`, `maimpick` and `setbg` scripts are Luke's own, from [voidrice](https://github.com/LukeSmithxyz/voidrice).
+The key bindings are the ones from [Luke Smith's dwm](https://github.com/LukeSmithxyz/dwm), limited to what dwm, vanitygaps, swallow and stacker can do (see [Key bindings](#key-bindings)). The `sysact`, `displayselect`, `dmenurecord`, `maimpick` and `setbg` scripts are Luke's own, from [voidrice](https://github.com/LukeSmithxyz/voidrice).
 
 The installation scripts are intended for Arch and Arch based distributions such as EndeavourOS and CachyOS, Fedora, and Artix with dinit, but the dotfiles can be used without them.
 
@@ -34,8 +34,9 @@ The patched dwm source is in `.local/src/dwm`. The patch files are in `.local/sr
 
 - [vanitygaps](https://dwm.suckless.org/patches/vanitygaps/) (`dwm-vanitygaps-6.2.diff`): gaps between windows and at the screen edges, in every layout. It also adds the bstack, spiral, dwindle, deck, centered master and other layouts. The gaps are the same as the Sway rice: 10px between windows, 30px at the left and right edges and 10px at the top and bottom.
 - [swallow](https://dwm.suckless.org/patches/swallow/) (`dwm-swallow-6.3.diff`): a graphical program started from st takes the place of the terminal until it closes, so the terminal doesn't take up space doing nothing.
+- [stacker](https://dwm.suckless.org/patches/stacker/) (`dwm-stacker-6.6.diff`): move windows up and down the stack with the keyboard (`mod + shift + j/k`), and jump to or move a window to the top of the stack (`mod + v`, `mod + shift + v`). A fullscreen window keeps the focus, as in stock dwm, and the stacker keys do nothing on an empty tag.
 
-Neither patch applied cleanly to dwm 6.8, so a few hunks were applied by hand.
+None of the patches applied cleanly to dwm 6.8, so a few hunks were applied by hand.
 
 **unclutter** is not a dwm patch but a small program, the same one Luke Smith uses. It hides the mouse cursor when it hasn't moved for a moment. `~/.config/x11/xinitrc` starts it.
 
@@ -189,7 +190,7 @@ If you use a display manager (such as LightDM or SDDM), it needs a session that 
 
 ## Key bindings
 
-These are the bindings from [Luke Smith's dwm](https://github.com/LukeSmithxyz/dwm), limited to what dwm, vanitygaps and swallow can do. `mod` is the Super (Windows) key.
+These are the bindings from [Luke Smith's dwm](https://github.com/LukeSmithxyz/dwm), limited to what dwm, vanitygaps, swallow and stacker can do. `mod` is the Super (Windows) key.
 
 | Keys | Action |
 |---|---|
@@ -200,6 +201,9 @@ These are the bindings from [Luke Smith's dwm](https://github.com/LukeSmithxyz/d
 | `mod + r` | Open the file manager (Thunar) |
 | `mod + q` | Close the focused window |
 | `mod + j` / `mod + k` | Focus the next / previous window |
+| `mod + shift + j` / `mod + shift + k` | Move the focused window down / up the stack |
+| `mod + v` | Focus the window at the top of the stack (the master) |
+| `mod + shift + v` | Move the focused window to the top of the stack |
 | `mod + space` | Move the focused window to the master area, or swap it with the master |
 | `mod + h` / `mod + l` | Shrink / grow the master area |
 | `mod + o` / `mod + shift + o` | One more / one less window in the master area |
@@ -243,7 +247,7 @@ With the mouse:
 | `mod` + click a tag | Move the focused window to the tag |
 | Middle click the desktop | Hide or show the bar |
 
-Luke's other bindings are left out, because they need patches this dwm doesn't have (true fullscreen on `mod + f`, sticky windows, scratchpads, moving windows in the stack, cycling tags, reloading Xresources colors and the clickable status bar) or programs this rice doesn't include (neomutt, newsboat, ncmpcpp with mpd, lf and the other LARBS scripts).
+Luke's other bindings are left out, because they need patches this dwm doesn't have (true fullscreen on `mod + f`, sticky windows, scratchpads, cycling tags, reloading Xresources colors and the clickable status bar) or programs this rice doesn't include (neomutt, newsboat, ncmpcpp with mpd, lf and the other LARBS scripts).
 
 ## Changing dwm, st, dmenu, slock or slstatus
 
@@ -295,6 +299,6 @@ dwm has no system tray, so there are no wifi and Bluetooth tray icons. Use `nmtu
 - Wallpaper [gruvbox wallpapers](https://gruvbox-wallpapers.pages.dev/)
 - Gruvbox palette: [morhetz/gruvbox](https://github.com/morhetz/gruvbox)
 - dwm, st, dmenu, slock and slstatus: [suckless.org](https://suckless.org)
-- The vanitygaps and swallow patches: [dwm patches](https://dwm.suckless.org/patches/)
+- The vanitygaps, swallow and stacker patches: [dwm patches](https://dwm.suckless.org/patches/)
 - Key bindings: Luke Smith's [dwm](https://github.com/LukeSmithxyz/dwm)
 - `sysact`, `displayselect`, `dmenurecord`, `maimpick` and `setbg`: Luke Smith's [voidrice](https://github.com/LukeSmithxyz/voidrice) (from [LARBS](https://larbs.xyz))
