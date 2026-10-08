@@ -64,8 +64,8 @@ sudo pacman -Syu --needed "${artix_packages[@]}" \
     turnstile turnstile-dinit \
     pipewire-dinit pipewire-pulse-dinit wireplumber-dinit
 
-# xss-lock is only in Arch's [extra], so enable it after the Artix repos, the
-# same way LARBS does. Its libraries are all installed by now, so pacman has
+# xss-lock is only in Arch's [extra], so enable it after the Artix repos.
+# Its libraries are all installed by now, so pacman has
 # nothing left to ask.
 echo "Enabling Arch's [extra] repo for xss-lock"
 sudo pacman -S --needed artix-archlinux-support

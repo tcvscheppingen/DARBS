@@ -2,11 +2,11 @@
 
 ![dwm with a floating fastfetch window, Neovim and a shell](screenshot.png)
 
-My dotfiles for dwm, st, dmenu, slock, slstatus and dunst in the [gruvbox](https://github.com/morhetz/gruvbox) dark palette: [dwm](https://dwm.suckless.org) 6.8 with the vanitygaps, swallow and stacker patches, 3px yellow borders and a plain text status bar. st is [Luke Smith's build](https://github.com/LukeSmithxyz/st), with his patches.
-
-The key bindings are from [Luke Smith's dwm](https://github.com/LukeSmithxyz/dwm), and `sysact`, `displayselect`, `dmenurecord`, `maimpick` and `setbg` are his scripts from [voidrice](https://github.com/LukeSmithxyz/voidrice).
+My dotfiles for dwm, st, dmenu, slock, dwmblocks and dunst in the [gruvbox](https://github.com/morhetz/gruvbox) dark palette: [dwm](https://dwm.suckless.org) 6.8 with the vanitygaps, swallow, stacker, statuscmd and systray patches, 3px yellow borders and a plain text status bar you can click. st has scrollback, transparency, clickable URLs and more.
 
 The install scripts support Arch (and Arch based distributions), Fedora and Artix with dinit.
+
+![Opening terminals, switching layouts and clicking the status bar](demo.gif)
 
 ## Installation
 
@@ -21,7 +21,7 @@ cd DARBS
 Then reboot. The script:
 - installs Xorg, the xcompmgr compositor, PipeWire, NetworkManager, Bluetooth, dunst, xss-lock, xwallpaper, unclutter, fonts, LibreWolf, Thunar, Neovim and the build dependencies (see `common.sh` and `auto-rice.sh` for the package lists)
 - backs up the configs it replaces to `~/.config/gruvbox-rice-backup-<date>/`
-- copies the dotfiles to `~/.config` and `~/.local`, then builds dwm, st, dmenu, slock and slstatus in `~/.local/src` and installs them to `/usr/local`
+- copies the dotfiles to `~/.config` and `~/.local`, then builds dwm, st, dmenu, slock and dwmblocks in `~/.local/src` and installs them to `/usr/local`
 - offers to start dwm when you log in on TTY1
 
 On Fedora it also adds the LibreWolf repo and installs the JetBrains Mono Nerd Font and xwallpaper from their releases. On Artix it uses dinit services, and Arch's `[extra]` repo for xss-lock.
@@ -36,7 +36,7 @@ if [ -z "$DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR" -eq 1 ]; then
     exec startx "$HOME/.config/x11/xinitrc"
 fi
 ```
-`xinitrc` sets the wallpaper and starts xcompmgr, slstatus, dunst, unclutter, xss-lock and dwm.
+`xinitrc` sets the wallpaper and starts xcompmgr, dwmblocks, dunst, the tray applets, unclutter, xss-lock and dwm.
 
 ## Patches
 
@@ -44,20 +44,32 @@ The patched source is in `.local/src/dwm`, with the patch files in `patches/`.
 - [vanitygaps](https://dwm.suckless.org/patches/vanitygaps/): gaps in every layout (10px between windows, 30px at the left and right edges) and extra layouts such as bstack, spiral, deck and centered master.
 - [swallow](https://dwm.suckless.org/patches/swallow/): a program started from st takes the terminal's place until it closes.
 - [stacker](https://dwm.suckless.org/patches/stacker/): move windows up and down the stack with the keyboard.
+- [statuscmd](https://dwm.suckless.org/patches/statuscmd/): clicks on the status bar go to dwmblocks, which runs the block's script with the mouse button in `BLOCK_BUTTON`.
+- [systray](https://dwm.suckless.org/patches/systray/): a system tray at the right of the bar.
 
-st in `.local/src/st` is [Luke Smith's st](https://github.com/LukeSmithxyz/st) (st 0.8.5, commit `48b8ee6`) with this rice's font and gruvbox cursor colors. His patches are merged into the source, so there are no patch files:
+st in `.local/src/st` is st 0.8.5 with these patches merged into the source, so there are no patch files:
 - scrollback, with the mouse wheel and the keyboard
 - zoom: change the font size with the keyboard
-- alpha: a transparent background (0.8 opacity, as in Luke's build), drawn by the xcompmgr compositor
+- alpha: a transparent background (0.8 opacity), drawn by the xcompmgr compositor
 - xresources: font, colors and alpha can be set in Xresources
 - externalpipe, with `st-urlhandler` and `st-copyout`: open or copy a URL, or copy a command's output, from a dmenu list
 - boxdraw, ligatures (with HarfBuzz) and font2 (color emoji from Noto Color Emoji)
 
 **unclutter** is the program that hides an idle mouse cursor, not a dwm patch.
 
+## Status bar
+
+The bar shows the network, a recording indicator, the volume, the battery, used memory, the date and the time. It is drawn by dwmblocks, which runs a script in `~/.local/bin/statusbar` for each block.
+
+| Block | Click |
+|---|---|
+| Network | Set up connections in `nmtui` |
+| Volume | Sound controls in `pulsemixer`; middle click mutes, scrolling changes the volume |
+| Memory | `htop` |
+
 ## Key bindings
 
-`mod` is the Super key. Only Luke's bindings that work with these patches and programs are included.
+`mod` is the Super key.
 
 | Keys | Action |
 |---|---|
@@ -101,11 +113,11 @@ cd ~/.local/src/dwm && make && sudo make install
 ```
 
 - The screen locks after 5 minutes and turns off after 10; change the `xset` lines in `~/.config/x11/xinitrc`.
-- The status bar blocks are in `~/.local/src/slstatus/config.h` and `~/.local/bin/statusbar`.
+- The status bar blocks are in `~/.local/src/dwmblocks/config.h` and their scripts in `~/.local/bin/statusbar`. A script reads the mouse button from `BLOCK_BUTTON`.
 - Notifications are configured in `~/.config/dunst/dunstrc`.
-- dwm has no system tray: use `nmtui` for wifi and `blueman-manager` for Bluetooth.
+- The system tray at the right of the bar shows `nm-applet` (network) and `blueman-applet` (Bluetooth), started in `xinitrc`. Programs with a tray icon add theirs there.
 
 ## Credits
-- [suckless.org](https://suckless.org) for dwm, st, dmenu, slock, slstatus and the [patches](https://dwm.suckless.org/patches/)
-- Luke Smith's [dwm](https://github.com/LukeSmithxyz/dwm) and [voidrice](https://github.com/LukeSmithxyz/voidrice)
+- [suckless.org](https://suckless.org) for dwm, st, dmenu, slock and the [patches](https://dwm.suckless.org/patches/)
+- Luke Smith's [dwm](https://github.com/LukeSmithxyz/dwm) (the key bindings), [st](https://github.com/LukeSmithxyz/st), [dwmblocks](https://github.com/LukeSmithxyz/dwmblocks) and [voidrice](https://github.com/LukeSmithxyz/voidrice) (`sysact`, `displayselect`, `dmenurecord`, `maimpick` and `setbg`)
 - [morhetz/gruvbox](https://github.com/morhetz/gruvbox) and [gruvbox wallpapers](https://gruvbox-wallpapers.pages.dev/)

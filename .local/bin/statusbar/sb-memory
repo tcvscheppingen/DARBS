@@ -1,0 +1,11 @@
+#!/bin/sh
+# Memory block for dwmblocks: used memory, counted the way slstatus did.
+# Click to open htop.
+
+case $BLOCK_BUTTON in
+    1) setsid -f "${TERMINAL:-st}" -e htop ;;
+esac
+
+# /proc/meminfo is in KiB; print GiB like "mem 2.8 Gi"
+awk '/^(MemTotal|MemFree|Buffers|Cached):/ { m[$1] = $2 }
+    END { printf "mem %.1f Gi\n", (m["MemTotal:"] - m["MemFree:"] - m["Buffers:"] - m["Cached:"]) / 1048576 }' /proc/meminfo

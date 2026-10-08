@@ -17,6 +17,11 @@ static const unsigned int gappoh    = 10;       /* horiz outer gap between windo
 static const unsigned int gappov    = 30;       /* vert outer gap between windows and screen edge */
 static       int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
+static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
+static const unsigned int systrayonleft = 0;    /* 0: systray in the right corner, >0: systray on left of status text */
+static const unsigned int systrayspacing = 2;   /* systray spacing */
+static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
+static const int showsystray        = 1;        /* 0 means no systray */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "JetBrainsMono Nerd Font:size=10", "Noto Color Emoji:pixelsize=12:antialias=true:autohint=true" };
@@ -89,6 +94,9 @@ static const Layout layouts[] = {
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
+/* the status monitor that statuscmd sends clicks on the bar to */
+#define STATUSBAR "dwmblocks"
+
 /* commands */
 /* dmenu takes its font and colors from its own config.h */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
@@ -97,9 +105,8 @@ static const char *termcmd[]  = { TERMINAL, NULL };
 
 #include <X11/XF86keysym.h>
 
-/* Luke Smith's key bindings (https://github.com/LukeSmithxyz/dwm), limited
- * to stock dwm, vanitygaps, swallow and stacker, and to the programs of this
- * rice */
+/* Key bindings, limited to stock dwm, vanitygaps, swallow and stacker, and
+ * to the programs of this rice */
 static const Key keys[] = {
 	/* modifier                     key              function            argument */
 	STACKKEYS(MODKEY,                                focus)
@@ -115,10 +122,10 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_9,                                8)
 	{ MODKEY,                       XK_0,            view,               {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,            tag,                {.ui = ~0 } },
-	{ MODKEY,                       XK_minus,        spawn,              SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-") },
-	{ MODKEY|ShiftMask,             XK_minus,        spawn,              SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 15%-") },
-	{ MODKEY,                       XK_equal,        spawn,              SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+") },
-	{ MODKEY|ShiftMask,             XK_equal,        spawn,              SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 15%+") },
+	{ MODKEY,                       XK_minus,        spawn,              SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-; pkill -RTMIN+10 dwmblocks") },
+	{ MODKEY|ShiftMask,             XK_minus,        spawn,              SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 15%-; pkill -RTMIN+10 dwmblocks") },
+	{ MODKEY,                       XK_equal,        spawn,              SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+; pkill -RTMIN+10 dwmblocks") },
+	{ MODKEY|ShiftMask,             XK_equal,        spawn,              SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 15%+; pkill -RTMIN+10 dwmblocks") },
 	{ MODKEY,                       XK_BackSpace,    spawn,              {.v = (const char*[]){ "sysact", NULL } } },
 	{ MODKEY|ShiftMask,             XK_BackSpace,    spawn,              {.v = (const char*[]){ "sysact", NULL } } },
 
@@ -151,7 +158,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_z,            incrgaps,           {.i = +3 } },
 	{ MODKEY,                       XK_x,            incrgaps,           {.i = -3 } },
 	{ MODKEY,                       XK_b,            togglebar,          {0} },
-	{ MODKEY|ShiftMask,             XK_m,            spawn,              SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle") },
+	{ MODKEY|ShiftMask,             XK_m,            spawn,              SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; pkill -RTMIN+10 dwmblocks") },
 
 	{ MODKEY,                       XK_Left,         focusmon,           {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_Left,         tagmon,             {.i = -1 } },
@@ -168,9 +175,9 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_Print,        spawn,              {.v = (const char*[]){ "dmenurecord", "kill", NULL } } },
 	{ MODKEY,                       XK_Delete,       spawn,              {.v = (const char*[]){ "dmenurecord", "kill", NULL } } },
 
-	{ 0, XF86XK_AudioMute,                           spawn,              SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle") },
-	{ 0, XF86XK_AudioRaiseVolume,                    spawn,              SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 0%- && wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%+") },
-	{ 0, XF86XK_AudioLowerVolume,                    spawn,              SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 0%+ && wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-") },
+	{ 0, XF86XK_AudioMute,                           spawn,              SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; pkill -RTMIN+10 dwmblocks") },
+	{ 0, XF86XK_AudioRaiseVolume,                    spawn,              SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 0%- && wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%+; pkill -RTMIN+10 dwmblocks") },
+	{ 0, XF86XK_AudioLowerVolume,                    spawn,              SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 0%+ && wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-; pkill -RTMIN+10 dwmblocks") },
 	{ 0, XF86XK_AudioMicMute,                        spawn,              SHCMD("pactl set-source-mute @DEFAULT_SOURCE@ toggle") },
 	{ 0, XF86XK_AudioPrev,                           spawn,              {.v = (const char*[]){ "playerctl", "previous", NULL } } },
 	{ 0, XF86XK_AudioNext,                           spawn,              {.v = (const char*[]){ "playerctl", "next", NULL } } },
@@ -184,6 +191,11 @@ static const Key keys[] = {
 static const Button buttons[] = {
 	/* click                event mask      button          function        argument */
 	{ ClkWinTitle,          0,              Button2,        zoom,           {0} },
+	{ ClkStatusText,        0,              Button1,        sigstatusbar,   {.i = 1} },
+	{ ClkStatusText,        0,              Button2,        sigstatusbar,   {.i = 2} },
+	{ ClkStatusText,        0,              Button3,        sigstatusbar,   {.i = 3} },
+	{ ClkStatusText,        0,              Button4,        sigstatusbar,   {.i = 4} },
+	{ ClkStatusText,        0,              Button5,        sigstatusbar,   {.i = 5} },
 	{ ClkClientWin,         MODKEY,         Button1,        movemouse,      {0} },
 	{ ClkClientWin,         MODKEY,         Button2,        defaultgaps,    {0} },
 	{ ClkClientWin,         MODKEY,         Button3,        resizemouse,    {0} },

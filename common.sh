@@ -12,7 +12,7 @@ fi
 BACKUP_DIR="$HOME/.config/gruvbox-rice-backup-$(date +%Y%m%d-%H%M%S)"
 
 # The suckless programs in .local/src, built and installed to /usr/local
-SUCKLESS=(dwm st dmenu slock slstatus)
+SUCKLESS=(dwm st dmenu slock dwmblocks)
 
 # Packages for Arch and Artix. Artix has all of them in its own repos except
 # xss-lock, which comes from Arch's [extra]. pipewire-jack answers pacman's
@@ -24,11 +24,11 @@ ARCH_PACKAGES=(
     xss-lock xwallpaper unclutter dunst libnotify xcompmgr
     pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber libpulse
     xdg-desktop-portal-gtk lxqt-policykit
-    networkmanager bluez bluez-utils blueman
+    networkmanager network-manager-applet bluez bluez-utils blueman
     maim slop xclip xdotool xdg-user-dirs xdg-utils brightnessctl playerctl psmisc bc file ffmpeg
     ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
     adwaita-icon-theme adwaita-cursors dconf
-    neovim thunar librewolf
+    neovim htop pulsemixer thunar librewolf
 )
 
 # Copy a file or folder into the backup folder
@@ -76,7 +76,7 @@ install_dotfiles() {
     fc-cache -f
 }
 
-# Build dwm, st, dmenu, slock and slstatus in ~/.local/src and install them to
+# Build dwm, st, dmenu, slock and dwmblocks in ~/.local/src and install them to
 # /usr/local. Building as the user keeps the build files yours, so you can
 # change config.h and rebuild without sudo.
 build_suckless() {
@@ -109,7 +109,7 @@ login_profile() {
 }
 
 # Offer to start dwm on TTY1 from the login profile, as the Arch Wiki
-# recommends. startx runs ~/.config/x11/xinitrc, which starts dwm, slstatus,
+# recommends. startx runs ~/.config/x11/xinitrc, which starts dwm, dwmblocks,
 # dunst and the rest.
 offer_dwm_autostart() {
     local snippet='if [ -z "$DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR" -eq 1 ]; then

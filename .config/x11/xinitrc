@@ -2,7 +2,15 @@
 # Started by startx (see "Starting dwm on login" in the README). Starts what
 # dwm doesn't start itself, then dwm.
 
-export PATH="$HOME/.local/bin:$PATH"
+# dwmblocks runs the bar blocks in ~/.local/bin/statusbar
+export PATH="$HOME/.local/bin:$HOME/.local/bin/statusbar:$PATH"
+# nmtui and other newt programs in gruvbox colors
+export NEWT_COLORS='root=,black window=,black border=yellow,black title=yellow,black
+roottext=white,black textbox=white,black label=white,black helpline=white,black
+button=black,yellow actbutton=black,yellow compactbutton=white,black
+listbox=white,black actlistbox=black,yellow sellistbox=yellow,black actsellistbox=black,yellow
+entry=white,black disentry=gray,black checkbox=white,black actcheckbox=black,yellow
+emptyscale=,black fullscale=,yellow'
 
 xrdb -merge ~/.config/x11/xresources
 xsetroot -cursor_name left_ptr
@@ -30,7 +38,10 @@ xss-lock -- slock &
 # The compositor, so st's background can be transparent
 xcompmgr &
 dunst &
-slstatus &
+dwmblocks &
+# Network and Bluetooth icons in the system tray
+nm-applet &
+blueman-applet &
 # Hides the mouse cursor when it hasn't moved for a moment
 unclutter &
 # Fedora keeps the agent in /usr/libexec

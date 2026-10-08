@@ -1,5 +1,10 @@
 #!/bin/sh
-# Network block for slstatus: the connection that has the default route
+# Network block for dwmblocks: the connection that has the default route.
+# Click to set up connections with nmtui.
+
+case $BLOCK_BUTTON in
+    1) setsid -f "${TERMINAL:-st}" -e nmtui ;;
+esac
 
 dev=$(ip route show default 2> /dev/null | awk '{ print $5; exit }')
 

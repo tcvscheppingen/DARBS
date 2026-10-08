@@ -39,11 +39,11 @@ install_fedora() {
         xss-lock unclutter dunst libnotify xcompmgr \
         pipewire pipewire-pulseaudio pipewire-alsa wireplumber pulseaudio-utils \
         xdg-desktop-portal-gtk lxqt-policykit \
-        NetworkManager NetworkManager-tui bluez blueman \
+        NetworkManager NetworkManager-tui network-manager-applet bluez blueman \
         maim slop xclip xdotool xdg-user-dirs xdg-utils brightnessctl playerctl psmisc bc file /usr/bin/ffmpeg \
         google-noto-sans-fonts google-noto-color-emoji-fonts \
         adwaita-icon-theme adwaita-cursor-theme dconf \
-        neovim Thunar librewolf curl tar xz
+        neovim htop Thunar librewolf curl tar xz
 
     # Fedora only packages the plain JetBrains Mono, so get the Nerd Font
     # from the nerd-fonts releases
@@ -52,6 +52,14 @@ install_fedora() {
         mkdir -p "$font_dir"
         curl -fL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz \
             | tar -xJ -C "$font_dir"
+    fi
+
+    # Clicking the volume in the bar opens pulsemixer, which Fedora does not
+    # package. It is a single Python script, so install it from its release.
+    if ! command -v pulsemixer > /dev/null; then
+        sudo curl -fL -o /usr/local/bin/pulsemixer \
+            https://raw.githubusercontent.com/GeorgeFilipkin/pulsemixer/1.5.1/pulsemixer
+        sudo chmod 755 /usr/local/bin/pulsemixer
     fi
 
     # setbg sets the wallpaper with xwallpaper, which Fedora does not package,
@@ -80,7 +88,7 @@ enable_services_systemd() {
     sudo systemctl enable bluetooth
 }
 
-echo "Installing Xorg, PipeWire, dunst, fonts and what dwm, st, dmenu, slock and slstatus need to build"
+echo "Installing Xorg, PipeWire, dunst, fonts and what dwm, st, dmenu, slock and dwmblocks need to build"
 if command -v pacman > /dev/null; then
     install_arch
 elif command -v dnf > /dev/null; then
