@@ -1,4 +1,4 @@
-# dwm Auto Rice Bootstrapping Script (DARBS)
+# DWM Auto Rice Bootstrapping Script (DARBS)
 
 ![dwm with a floating fastfetch window, Neovim and a shell](screenshot.png)
 
