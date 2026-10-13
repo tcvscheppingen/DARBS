@@ -68,6 +68,10 @@ The bar shows the network, a recording indicator, the volume, the battery, used 
 | Volume | Sound controls in `pulsemixer`; middle click mutes, scrolling changes the volume |
 | Memory | `htop` |
 
+### No sound ("vol dummy")
+
+When the volume block shows `vol dummy`, PipeWire found no sound card and uses its placeholder output. On some laptops with Intel sound that happens because the SOF driver doesn't work. Run `sound-fix` in a terminal: it checks whether that's the case and offers to switch to the older HDA driver (the built-in digital microphones don't work with it). Reboot afterwards. `sound-fix sof` switches back.
+
 ## Key bindings
 
 `mod` is the Super key.

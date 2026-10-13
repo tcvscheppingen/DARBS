@@ -112,3 +112,4 @@ fi
 report_backup
 echo "Installed Gruvbox dotfiles successfully"
 echo "Reboot so elogind, turnstile, PipeWire, NetworkManager and Bluetooth start"
+echo "No sound after the reboot (the bar shows \"vol dummy\")? Run sound-fix in a terminal"

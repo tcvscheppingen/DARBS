@@ -110,3 +110,4 @@ offer_dwm_autostart
 report_backup
 echo "Installed Gruvbox dotfiles successfully"
 echo "Reboot, or log out and log in again, so PipeWire, NetworkManager and Bluetooth start"
+echo "No sound after that (the bar shows \"vol dummy\")? Run sound-fix in a terminal"
