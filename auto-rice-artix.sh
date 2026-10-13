@@ -44,11 +44,11 @@ enable_user_service() {
 # "invalid or corrupted package (PGP signature)". The full upgrade below
 # follows right after, so this is not left as a partial upgrade.
 echo "Updating the Artix and Arch keyrings"
-sudo pacman -Sy --needed artix-keyring archlinux-keyring
+sudo pacman -Sy --needed --noconfirm artix-keyring archlinux-keyring
 
 # Install everything except xss-lock from the Artix repos first. With [extra]
-# enabled, pacman asks for every shared library whether it should come from
-# Artix or Arch, because both have it.
+# enabled, Artix and Arch both have the shared libraries, and pacman would
+# have to choose between them for each one.
 artix_packages=()
 for package in "${ARCH_PACKAGES[@]}"; do
     if [ "$package" != xss-lock ]; then
@@ -58,8 +58,10 @@ done
 
 # -Syu rather than -S, because a database refresh without an upgrade is a
 # partial upgrade
-echo "Installing Xorg, PipeWire, dunst, fonts, build dependencies and dinit services"
-sudo pacman -Syu --needed "${artix_packages[@]}" \
+detect_gpu_packages
+
+echo "Installing Xorg, PipeWire, dunst, fonts, GPU drivers, build dependencies and dinit services"
+sudo pacman -Syu --needed --noconfirm "${artix_packages[@]}" "${GPU_PACKAGES[@]}" \
     elogind-dinit dbus-dinit networkmanager-dinit bluez-dinit \
     turnstile turnstile-dinit \
     pipewire-dinit pipewire-pulse-dinit wireplumber-dinit
@@ -68,12 +70,12 @@ sudo pacman -Syu --needed "${artix_packages[@]}" \
 # Its libraries are all installed by now, so pacman has
 # nothing left to ask.
 echo "Enabling Arch's [extra] repo for xss-lock"
-sudo pacman -S --needed artix-archlinux-support
+sudo pacman -S --needed --noconfirm artix-archlinux-support
 if ! grep -q '^\[extra\]' /etc/pacman.conf; then
     printf '\n[extra]\nInclude = /etc/pacman.d/mirrorlist-arch\n' | sudo tee -a /etc/pacman.conf > /dev/null
 fi
 sudo pacman-key --populate archlinux
-sudo pacman -Syu --needed xss-lock
+sudo pacman -Syu --needed --noconfirm xss-lock
 
 # elogind-dinit enables elogind itself, through the logind service it links
 # into boot.d

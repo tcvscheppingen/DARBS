@@ -31,6 +31,26 @@ ARCH_PACKAGES=(
     neovim htop pulsemixer thunar librewolf
 )
 
+# Vulkan and hardware video decoding (VA-API) drivers for the GPUs in this
+# machine, by PCI vendor ID. AMD's VA-API driver is part of mesa, which Xorg
+# pulls in. NVIDIA is left to the user: the right driver depends on the card.
+detect_gpu_packages() {
+    local file vendor seen=" "
+    GPU_PACKAGES=()
+    for file in /sys/class/drm/card*/device/vendor; do
+        [ -r "$file" ] || continue
+        read -r vendor < "$file"
+        case $seen in *" $vendor "*) continue ;; esac
+        seen+="$vendor "
+        case $vendor in
+            0x8086) GPU_PACKAGES+=(vulkan-intel intel-media-driver) ;;
+            0x1002) GPU_PACKAGES+=(vulkan-radeon) ;;
+            0x10de) command -v nvidia-smi > /dev/null \
+                || echo "NVIDIA GPU found: install its driver yourself, see https://wiki.archlinux.org/title/NVIDIA" >&2 ;;
+        esac
+    done
+}
+
 # Copy a file or folder into the backup folder
 backup() {
     mkdir -p "$BACKUP_DIR"

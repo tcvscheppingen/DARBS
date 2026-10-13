@@ -16,7 +16,8 @@ if grep -qs '^ID=artix' /etc/os-release; then
 fi
 
 install_arch() {
-    sudo pacman -S --needed "${ARCH_PACKAGES[@]}"
+    detect_gpu_packages
+    sudo pacman -S --needed --noconfirm "${ARCH_PACKAGES[@]}" "${GPU_PACKAGES[@]}"
 }
 
 install_fedora() {

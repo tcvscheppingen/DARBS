@@ -20,6 +20,7 @@ cd DARBS
 
 Then reboot. The script:
 - installs Xorg, the xcompmgr compositor, PipeWire, NetworkManager, Bluetooth, dunst, xss-lock, xwallpaper, unclutter, fonts, LibreWolf, Thunar, Neovim and the build dependencies (see `common.sh` and `auto-rice.sh` for the package lists)
+- on Arch and Artix, installs the Vulkan and hardware video decoding drivers for Intel and AMD GPUs it finds (NVIDIA drivers are not installed)
 - backs up the configs it replaces to `~/.config/gruvbox-rice-backup-<date>/`
 - copies the dotfiles to `~/.config` and `~/.local`, then builds dwm, st, dmenu, slock and dwmblocks in `~/.local/src` and installs them to `/usr/local`
 - offers to start dwm when you log in on TTY1
