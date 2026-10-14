@@ -104,7 +104,7 @@ xdg-user-dirs-update
 install_dotfiles
 build_suckless
 
-offer_dwm_autostart
+offer_login
 
 if [ ${#MISSING_SERVICES[@]} -gt 0 ]; then
     echo "These dinit services were not found, so they are not enabled: ${MISSING_SERVICES[*]}" >&2

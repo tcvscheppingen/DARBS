@@ -128,10 +128,10 @@ login_profile() {
     esac
 }
 
-# Offer to start dwm on TTY1 from the login profile, as the Arch Wiki
-# recommends. startx runs ~/.config/x11/xinitrc, which starts dwm, dwmblocks,
-# dunst and the rest.
-offer_dwm_autostart() {
+# Start dwm on TTY1 from the login profile, as the Arch Wiki recommends.
+# startx runs ~/.config/x11/xinitrc, which starts dwm, dwmblocks, dunst and
+# the rest.
+add_tty_login() {
     local snippet='if [ -z "$DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR" -eq 1 ]; then
     exec startx "$HOME/.config/x11/xinitrc"
 fi'
@@ -146,14 +146,104 @@ fi'
         echo "$profile already starts X"
         return
     fi
+    [ -e "$profile" ] && backup "$profile"
+    printf '\n# Start dwm on TTY1 (added by the Gruvbox dwm rice)\n%s\n' "$snippet" >> "$profile"
+    echo "Added dwm to $profile"
+}
 
-    read -r -p "Start dwm automatically when you log in on TTY1 (adds it to $profile)? [y/N] " answer || true
+# Link a dinit service into boot.d (Artix), or enable a systemd unit
+enable_boot_service() {
+    if command -v dinitctl > /dev/null; then
+        [ -e "/etc/dinit.d/boot.d/$1" ] || sudo ln -s "/etc/dinit.d/$1" "/etc/dinit.d/boot.d/$1"
+    else
+        sudo systemctl enable "$1"
+    fi
+}
+
+# The display manager that already starts on boot, if any
+current_display_manager() {
+    local dm
+    if command -v dinitctl > /dev/null; then
+        for dm in lightdm sddm gdm lxdm ly greetd; do
+            if [ -e "/etc/dinit.d/boot.d/$dm" ]; then
+                echo "$dm"
+                return
+            fi
+        done
+    elif [ -L /etc/systemd/system/display-manager.service ]; then
+        basename "$(readlink /etc/systemd/system/display-manager.service)" .service
+    fi
+}
+
+# LightDM with a minimal gruvbox greeter: the wallpaper, a login box in dark
+# Adwaita and a panel with only the host name, clock and power menu
+add_display_manager() {
+    local current
+    echo "Installing LightDM with a minimal gruvbox greeter"
+    if grep -qs '^ID=artix' /etc/os-release; then
+        sudo pacman -S --needed --noconfirm lightdm lightdm-gtk-greeter lightdm-dinit gnome-themes-extra
+    elif command -v pacman > /dev/null; then
+        sudo pacman -S --needed --noconfirm lightdm lightdm-gtk-greeter gnome-themes-extra
+    else
+        sudo dnf install lightdm lightdm-gtk gnome-themes-extra
+    fi
+
+    # The dwm session: dwm.desktop runs dwm-session, which runs your xinitrc
+    # like startx does
+    printf '#!/bin/sh\n# Started by the display manager (dwm.desktop): the same session as startx\nexec sh "$HOME/.config/x11/xinitrc"\n' \
+        | sudo tee /usr/local/bin/dwm-session > /dev/null
+    sudo chmod 755 /usr/local/bin/dwm-session
+    sudo mkdir -p /usr/share/xsessions
+    printf '[Desktop Entry]\nName=dwm\nComment=Dynamic window manager (Gruvbox dwm rice)\nExec=/usr/local/bin/dwm-session\nType=Application\nDesktopNames=dwm\n' \
+        | sudo tee /usr/share/xsessions/dwm.desktop > /dev/null
+
+    # The greeter runs as the lightdm user, which can't read your home folder
+    sudo install -Dm644 "$REPO_DIR/.local/share/wallpaper.jpg" /usr/share/backgrounds/gruvbox-rice/wallpaper.jpg
+    if [ -e /etc/lightdm/lightdm-gtk-greeter.conf ]; then
+        backup /etc/lightdm/lightdm-gtk-greeter.conf
+    fi
+    sudo tee /etc/lightdm/lightdm-gtk-greeter.conf > /dev/null << 'EOF'
+# Minimal gruvbox greeter (Gruvbox dwm rice)
+[greeter]
+background = /usr/share/backgrounds/gruvbox-rice/wallpaper.jpg
+user-background = false
+transition-type = none
+theme-name = Adwaita-dark
+icon-theme-name = Adwaita
+cursor-theme-name = Adwaita
+font-name = JetBrainsMono Nerd Font 11
+hide-user-image = true
+indicators = ~host;~spacer;~clock;~spacer;~power
+clock-format = %a %d %b  %H:%M
+EOF
+    sudo mkdir -p /etc/lightdm/lightdm.conf.d
+    printf '# Gruvbox dwm rice\n[Seat:*]\ngreeter-session=lightdm-gtk-greeter\nuser-session=dwm\n' \
+        | sudo tee /etc/lightdm/lightdm.conf.d/50-gruvbox-rice.conf > /dev/null
+
+    # Two display managers would fight over the screen
+    current="$(current_display_manager)"
+    if [ -n "$current" ] && [ "$current" != lightdm ]; then
+        echo "$current already starts on boot, so LightDM is not enabled. Disable $current and enable lightdm to use it."
+    else
+        enable_boot_service lightdm
+        echo "LightDM starts on boot; choose the dwm session there"
+    fi
+}
+
+# How dwm starts: RICE_LOGIN=tty|dm|none skips the question
+offer_login() {
+    local answer="${RICE_LOGIN:-}"
+    if [ -z "$answer" ]; then
+        echo "How do you want to start dwm?"
+        echo "  1) Automatically when you log in on TTY1 (startx, no display manager)"
+        echo "  2) From a graphical login screen (LightDM with a minimal gruvbox greeter)"
+        echo "  3) Neither, I'll start it myself"
+        read -r -p "Choice [3]: " answer || true
+    fi
     case "$answer" in
-        [yY]*)
-            [ -e "$profile" ] && backup "$profile"
-            printf '\n# Start dwm on TTY1 (added by the Gruvbox dwm rice)\n%s\n' "$snippet" >> "$profile"
-            echo "Added dwm to $profile"
-            ;;
+        1|tty) add_tty_login ;;
+        2|dm)  add_display_manager ;;
+        *)     echo "dwm doesn't start by itself; see the README to start it" ;;
     esac
 }
 

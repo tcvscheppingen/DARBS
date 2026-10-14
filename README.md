@@ -23,7 +23,7 @@ Then reboot. The script:
 - on Arch and Artix, installs the Vulkan and hardware video decoding drivers for Intel and AMD GPUs it finds (NVIDIA drivers are not installed)
 - backs up the configs it replaces to `~/.config/gruvbox-rice-backup-<date>/`
 - copies the dotfiles to `~/.config` and `~/.local`, then builds dwm, st, dmenu, slock and dwmblocks in `~/.local/src` and installs them to `/usr/local`
-- offers to start dwm when you log in on TTY1
+- asks how you want to start dwm: automatically when you log in on TTY1, or from a graphical login screen (LightDM with a minimal gruvbox greeter), see [Starting dwm on login](#starting-dwm-on-login)
 
 On Fedora it also adds the LibreWolf repo and installs the JetBrains Mono Nerd Font and xwallpaper from their releases. On Artix it uses dinit services, and Arch's `[extra]` repo for xss-lock.
 
@@ -31,13 +31,20 @@ Already have the packages? `./move-config-files.sh` only copies the dotfiles and
 
 ### Starting dwm on login
 
-Without a display manager, add this to your login profile (`~/.bash_profile` or `~/.zprofile`):
+The script asks how you want to start dwm. To answer in advance, for example from another script, set `RICE_LOGIN` to `tty`, `dm` or `none`:
+```bash
+RICE_LOGIN=dm ./auto-rice.sh
+```
+
+**On TTY1, without a display manager** (`tty`): the script adds this to your login profile (`~/.bash_profile` or `~/.zprofile`):
 ```bash
 if [ -z "$DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR" -eq 1 ]; then
     exec startx "$HOME/.config/x11/xinitrc"
 fi
 ```
 `xinitrc` sets the wallpaper and starts xcompmgr, dwmblocks, dunst, the tray applets, unclutter, xss-lock and dwm.
+
+**From a graphical login screen** (`dm`): the script installs LightDM with lightdm-gtk-greeter, and keeps the greeter minimal: the wallpaper, a login box in dark Adwaita and a panel with only the host name, the clock and the power menu (`/etc/lightdm/lightdm-gtk-greeter.conf`). The dwm session (`/usr/share/xsessions/dwm.desktop`) runs `/usr/local/bin/dwm-session`, which runs the same `xinitrc`. LightDM is not enabled when another display manager already starts on boot.
 
 ## Patches
 

@@ -105,7 +105,7 @@ xdg-user-dirs-update
 install_dotfiles
 build_suckless
 
-offer_dwm_autostart
+offer_login
 
 report_backup
 echo "Installed Gruvbox dotfiles successfully"
