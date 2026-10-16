@@ -1,6 +1,6 @@
 # DWM Auto Rice Bootstrapping Script (DARBS)
 
-![dwm with a floating fastfetch window, Neovim and a shell](screenshot.png)
+![dwm with Helix and fastfetch floating over the Cosmic Cliffs wallpaper](screenshot.png)
 
 My dotfiles for dwm, st, dmenu, slock, dwmblocks and dunst, with Neovim and Helix themes. Everything uses **Steel**: neutral greys with one steel-blue accent. dwm 6.8 has gaps, extra layouts, window swallowing and a plain text status bar you can click; st has scrollback, transparency and clickable URLs.
 
