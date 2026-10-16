@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Locks the screen and returns once it is unlocked. Like slock, a command
+# given as arguments runs after the screen is locked (sysact uses this to
+# lock before sleep).
+#
+# In a session started by LightDM, the LightDM login screen locks it
+# (dm-tool lock). Otherwise, for example after startx on TTY1, slock does.
+# LightDM shows its login screen on another virtual terminal; this waits
+# until the session's own terminal is active again instead of asking
+# loginctl, which not every Artix install has.
+
+# LightDM sets XDG_SEAT_PATH in the sessions it starts
+if [ -z "$XDG_SEAT_PATH" ] || ! command -v dm-tool > /dev/null; then
+	exec slock "$@"
+fi
+
+activevt() { cat /sys/class/tty/tty0/active; }
+
+# This session's terminal. When it isn't the active one, the login screen
+# already shows (sysact locks before sleep, and xss-lock locks again).
+vt="tty${XDG_VTNR:-$(activevt | sed 's/^tty//')}"
+if [ "$(activevt)" = "$vt" ]; then
+	dm-tool lock
+
+	# Give LightDM 5 seconds to switch to its login screen. If it doesn't,
+	# lock with slock instead of leaving the screen unlocked.
+	i=0
+	while [ "$(activevt)" = "$vt" ]; do
+		[ "$i" -ge 50 ] && exec slock "$@"
+		sleep 0.1
+		i=$((i + 1))
+	done
+fi
+
+[ $# -gt 0 ] && "$@"
+
+# Back on this session's terminal means it was unlocked
+while [ "$(activevt)" != "$vt" ]; do
+	sleep 0.5
+done

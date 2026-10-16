@@ -32,10 +32,11 @@ gsettings set $gnome_schema cursor-size 24
 dbus-update-activation-environment $([ -d /run/systemd/system ] && echo --systemd) DISPLAY XAUTHORITY
 
 # Lock after 5 minutes without input, turn the displays off after 10, and
-# lock before the computer goes to sleep
+# lock before the computer goes to sleep. lockscreen uses the LightDM login
+# screen when LightDM started this session, and slock otherwise.
 xset s 300 300
 xset dpms 600 600 600
-xss-lock -- slock &
+xss-lock -- lockscreen &
 
 # The compositor, so st's background can be transparent
 xcompmgr &

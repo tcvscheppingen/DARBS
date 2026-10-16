@@ -46,6 +46,8 @@ fi
 
 **From a graphical login screen** (`dm`): the script installs LightDM with lightdm-gtk-greeter, and keeps the greeter minimal: the wallpaper, a login box in dark Adwaita and a panel with only the host name, the clock and the power menu (`/etc/lightdm/lightdm-gtk-greeter.conf`). The dwm session (`/usr/share/xsessions/dwm.desktop`) runs `/usr/local/bin/dwm-session`, which runs the same `xinitrc`. LightDM is not enabled when another display manager already starts on boot.
 
+Locking the screen (from `sysact`, after 5 minutes idle and before sleep) runs `lockscreen`: in a session LightDM started, it locks with the LightDM login screen (`dm-tool lock`), and otherwise with slock.
+
 ## Patches
 
 The patched source is in `.local/src/dwm`, with the patch files in `patches/`.

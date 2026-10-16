@@ -17,7 +17,7 @@ lock(){
 	was_muted="$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -o 'MUTED' && echo 1 || echo 0)"
 	mpc pause & pauseallmpv &
 	wpctl set-mute @DEFAULT_AUDIO_SINK@ 1 &
-	slock
+	lockscreen
 	[ "$was_muted" -eq 0 ] && wpctl set-mute @DEFAULT_AUDIO_SINK@ 0
 	pkill -RTMIN+10 "${STATUSBAR:-dwmblocks}"
 }
@@ -26,8 +26,8 @@ case "$(printf "🔒 lock\n🚪 leave $WM\n♻️ renew $WM\n🐻 hibernate\n�
 	'🔒 lock') lock ;;
 	"🚪 leave $WM") kill -TERM "$(wmpid)" ;;
 	"♻️ renew $WM") kill -HUP "$(wmpid)" ;;
-	'🐻 hibernate') slock $ctl hibernate -i ;;
-	'💤 sleep') slock $ctl suspend -i ;;
+	'🐻 hibernate') lockscreen $ctl hibernate -i ;;
+	'💤 sleep') lockscreen $ctl suspend -i ;;
 	'🔃 reboot') $ctl reboot -i ;;
 	'🖥️shutdown') $ctl poweroff -i ;;
 	'📺 display off') xset dpms force off ;;
