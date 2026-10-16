@@ -10,26 +10,26 @@ st.font: Monospace-11;
 
 !! Set the background, foreground and cursor colors as below:
 
-!! gruvbox:
-*.color0: #1d2021
-*.color1: #cc241d
-*.color2: #98971a
-*.color3: #d79921
-*.color4: #458588
-*.color5: #b16286
-*.color6: #689d6a
-*.color7: #a89984
-*.color8: #928374
-*.color9: #fb4934
-*.color10: #b8bb26
-*.color11: #fabd2f
-*.color12: #83a598
-*.color13: #d3869b
-*.color14: #8ec07c
-*.color15: #ebdbb2
-*.background: #282828
-*.foreground: white
-*.cursorColor: white
+!! steel (the DARBS palette, also in config.h):
+*.color0: #1f1f1f
+*.color1: #c25d5d
+*.color2: #6fa392
+*.color3: #c4a35e
+*.color4: #5b8fc7
+*.color5: #8f7fc2
+*.color6: #5ea7b5
+*.color7: #c6c6c6
+*.color8: #5a5a5a
+*.color9: #d87272
+*.color10: #84b8a7
+*.color11: #d6b876
+*.color12: #74a5da
+*.color13: #a595d4
+*.color14: #78bcc9
+*.color15: #e8e8e8
+*.background: #151515
+*.foreground: #c6c6c6
+*.cursorColor: #c6c6c6
 
 /* /1* !! gruvbox light: *1/ */
 /* *.color0: #fbf1c7 */

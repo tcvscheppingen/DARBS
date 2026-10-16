@@ -9,7 +9,7 @@ if [ "$(id -u)" -eq 0 ]; then
     exit 1
 fi
 
-BACKUP_DIR="$HOME/.config/gruvbox-rice-backup-$(date +%Y%m%d-%H%M%S)"
+BACKUP_DIR="$HOME/.config/darbs-backup-$(date +%Y%m%d-%H%M%S)"
 
 # The suckless programs in .local/src, built and installed to /usr/local
 SUCKLESS=(dwm st dmenu slock dwmblocks)
@@ -60,7 +60,7 @@ backup() {
 # Back up the configs, scripts and sources this theme replaces, then copy the
 # dotfiles into ~/.config, ~/.local/bin, ~/.local/share and ~/.local/src
 install_dotfiles() {
-    for dir in x11 dunst gtk-3.0 nvim; do
+    for dir in x11 dunst gtk-3.0 nvim helix; do
         if [ -e "$HOME/.config/$dir" ]; then
             backup "$HOME/.config/$dir"
         fi
@@ -147,7 +147,7 @@ fi'
         return
     fi
     [ -e "$profile" ] && backup "$profile"
-    printf '\n# Start dwm on TTY1 (added by the Gruvbox dwm rice)\n%s\n' "$snippet" >> "$profile"
+    printf '\n# Start dwm on TTY1 (added by DARBS)\n%s\n' "$snippet" >> "$profile"
     echo "Added dwm to $profile"
 }
 
@@ -175,11 +175,11 @@ current_display_manager() {
     fi
 }
 
-# LightDM with a minimal gruvbox greeter: the wallpaper, a login box in dark
+# LightDM with a minimal greeter: the wallpaper, a login box in dark
 # Adwaita and a panel with only the host name, clock and power menu
 add_display_manager() {
     local current
-    echo "Installing LightDM with a minimal gruvbox greeter"
+    echo "Installing LightDM with a minimal greeter"
     if grep -qs '^ID=artix' /etc/os-release; then
         sudo pacman -S --needed --noconfirm lightdm lightdm-gtk-greeter lightdm-dinit gnome-themes-extra
     elif command -v pacman > /dev/null; then
@@ -194,18 +194,18 @@ add_display_manager() {
         | sudo tee /usr/local/bin/dwm-session > /dev/null
     sudo chmod 755 /usr/local/bin/dwm-session
     sudo mkdir -p /usr/share/xsessions
-    printf '[Desktop Entry]\nName=dwm\nComment=Dynamic window manager (Gruvbox dwm rice)\nExec=/usr/local/bin/dwm-session\nType=Application\nDesktopNames=dwm\n' \
+    printf '[Desktop Entry]\nName=dwm\nComment=Dynamic window manager (DARBS)\nExec=/usr/local/bin/dwm-session\nType=Application\nDesktopNames=dwm\n' \
         | sudo tee /usr/share/xsessions/dwm.desktop > /dev/null
 
     # The greeter runs as the lightdm user, which can't read your home folder
-    sudo install -Dm644 "$REPO_DIR/.local/share/wallpaper.jpg" /usr/share/backgrounds/gruvbox-rice/wallpaper.jpg
+    sudo install -Dm644 "$REPO_DIR/.local/share/wallpaper.jpg" /usr/share/backgrounds/darbs/wallpaper.jpg
     if [ -e /etc/lightdm/lightdm-gtk-greeter.conf ]; then
         backup /etc/lightdm/lightdm-gtk-greeter.conf
     fi
     sudo tee /etc/lightdm/lightdm-gtk-greeter.conf > /dev/null << 'EOF'
-# Minimal gruvbox greeter (Gruvbox dwm rice)
+# Minimal greeter (DARBS)
 [greeter]
-background = /usr/share/backgrounds/gruvbox-rice/wallpaper.jpg
+background = /usr/share/backgrounds/darbs/wallpaper.jpg
 user-background = false
 transition-type = none
 theme-name = Adwaita-dark
@@ -217,8 +217,8 @@ indicators = ~host;~spacer;~clock;~spacer;~power
 clock-format = %a %d %b  %H:%M
 EOF
     sudo mkdir -p /etc/lightdm/lightdm.conf.d
-    printf '# Gruvbox dwm rice\n[Seat:*]\ngreeter-session=lightdm-gtk-greeter\nuser-session=dwm\n' \
-        | sudo tee /etc/lightdm/lightdm.conf.d/50-gruvbox-rice.conf > /dev/null
+    printf '# DARBS\n[Seat:*]\ngreeter-session=lightdm-gtk-greeter\nuser-session=dwm\n' \
+        | sudo tee /etc/lightdm/lightdm.conf.d/50-darbs.conf > /dev/null
 
     # Two display managers would fight over the screen
     current="$(current_display_manager)"
@@ -236,7 +236,7 @@ offer_login() {
     if [ -z "$answer" ]; then
         echo "How do you want to start dwm?"
         echo "  1) Automatically when you log in on TTY1 (startx, no display manager)"
-        echo "  2) From a graphical login screen (LightDM with a minimal gruvbox greeter)"
+        echo "  2) From a graphical login screen (LightDM with a minimal greeter)"
         echo "  3) Neither, I'll start it myself"
         read -r -p "Choice [3]: " answer || true
     fi

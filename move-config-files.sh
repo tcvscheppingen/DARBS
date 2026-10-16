@@ -11,5 +11,5 @@ install_dotfiles
 build_suckless
 
 report_backup
-echo "Installed Gruvbox dotfiles successfully"
+echo "Installed the DARBS dotfiles successfully"
 echo "Restart dwm with sysact (mod + Backspace, renew dwm), or log in again"

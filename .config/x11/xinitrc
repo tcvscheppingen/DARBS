@@ -4,13 +4,13 @@
 
 # dwmblocks runs the bar blocks in ~/.local/bin/statusbar
 export PATH="$HOME/.local/bin:$HOME/.local/bin/statusbar:$PATH"
-# nmtui and other newt programs in gruvbox colors
-export NEWT_COLORS='root=,black window=,black border=yellow,black title=yellow,black
+# nmtui and other newt programs in the steel colors
+export NEWT_COLORS='root=,black window=,black border=blue,black title=blue,black
 roottext=white,black textbox=white,black label=white,black helpline=white,black
-button=black,yellow actbutton=black,yellow compactbutton=white,black
-listbox=white,black actlistbox=black,yellow sellistbox=yellow,black actsellistbox=black,yellow
-entry=white,black disentry=gray,black checkbox=white,black actcheckbox=black,yellow
-emptyscale=,black fullscale=,yellow'
+button=black,blue actbutton=black,blue compactbutton=white,black
+listbox=white,black actlistbox=black,blue sellistbox=blue,black actsellistbox=black,blue
+entry=white,black disentry=gray,black checkbox=white,black actcheckbox=black,blue
+emptyscale=,black fullscale=,blue'
 
 xrdb -merge ~/.config/x11/xresources
 xsetroot -cursor_name left_ptr

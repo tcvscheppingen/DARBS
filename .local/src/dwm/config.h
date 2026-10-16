@@ -26,15 +26,16 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "JetBrainsMono Nerd Font:size=10", "Noto Color Emoji:pixelsize=12:antialias=true:autohint=true" };
 
-/* Gruvbox palette */
-static const char bg0[]             = "#282828";
-static const char bg1[]             = "#3c3836";
-static const char fg[]              = "#ebdbb2";
-static const char dyellow[]         = "#d79921";
+/* Steel palette: neutral greys and one steel-blue accent */
+static const char bg[]              = "#151515";
+static const char border[]          = "#3a3a3a";
+static const char fg[]              = "#c6c6c6";
+static const char selfg[]           = "#f0f0f0";
+static const char accent[]          = "#3d7ab8";
 static const char *colors[][3]      = {
-	/*               fg   bg       border   */
-	[SchemeNorm] = { fg,  bg0,     bg1     },
-	[SchemeSel]  = { bg0, dyellow, dyellow },
+	/*               fg     bg      border */
+	[SchemeNorm] = { fg,    bg,     border },
+	[SchemeSel]  = { selfg, accent, accent },
 };
 
 /* tagging */

@@ -2,7 +2,7 @@
 
 ![dwm with a floating fastfetch window, Neovim and a shell](screenshot.png)
 
-My dotfiles for dwm, st, dmenu, slock, dwmblocks and dunst in the [gruvbox](https://github.com/morhetz/gruvbox) dark palette: [dwm](https://dwm.suckless.org) 6.8 with the vanitygaps, swallow, stacker, statuscmd and systray patches, 3px yellow borders and a plain text status bar you can click. st has scrollback, transparency, clickable URLs and more.
+My dotfiles for dwm, st, dmenu, slock, dwmblocks and dunst in Steel, a plain palette of neutral greys with one steel-blue accent (see [Colors](#colors)): [dwm](https://dwm.suckless.org) 6.8 with the vanitygaps, swallow, stacker, statuscmd and systray patches, 3px borders and a plain text status bar you can click. st has scrollback, transparency, clickable URLs and more.
 
 The install scripts support Arch (and Arch based distributions), Fedora and Artix with dinit.
 
@@ -21,9 +21,9 @@ cd DARBS
 Then reboot. The script:
 - installs Xorg, the xcompmgr compositor, PipeWire, NetworkManager, Bluetooth, dunst, xss-lock, xwallpaper, unclutter, fonts, LibreWolf, Thunar, Neovim and the build dependencies (see `common.sh` and `auto-rice.sh` for the package lists)
 - on Arch and Artix, installs the Vulkan and hardware video decoding drivers for Intel and AMD GPUs it finds (NVIDIA drivers are not installed)
-- backs up the configs it replaces to `~/.config/gruvbox-rice-backup-<date>/`
+- backs up the configs it replaces to `~/.config/darbs-backup-<date>/`
 - copies the dotfiles to `~/.config` and `~/.local`, then builds dwm, st, dmenu, slock and dwmblocks in `~/.local/src` and installs them to `/usr/local`
-- asks how you want to start dwm: automatically when you log in on TTY1, or from a graphical login screen (LightDM with a minimal gruvbox greeter), see [Starting dwm on login](#starting-dwm-on-login)
+- asks how you want to start dwm: automatically when you log in on TTY1, or from a graphical login screen (LightDM with a minimal greeter), see [Starting dwm on login](#starting-dwm-on-login)
 
 On Fedora it also adds the LibreWolf repo and installs the JetBrains Mono Nerd Font and xwallpaper from their releases. On Artix it uses dinit services, and Arch's `[extra]` repo for xss-lock.
 
@@ -129,7 +129,26 @@ cd ~/.local/src/dwm && make && sudo make install
 - Notifications are configured in `~/.config/dunst/dunstrc`.
 - The system tray at the right of the bar shows `nm-applet` (network) and `blueman-applet` (Bluetooth), started in `xinitrc`. Programs with a tray icon add theirs there.
 
+## Colors
+
+Steel is a small palette made for DARBS: near-black greys for the bar, the terminal and unfocused borders, and one steel blue (`#3d7ab8`) for the focused window, the selected tag and the selection in dmenu. The terminal colors are muted and cool; red and gold only show up for errors and warnings.
+
+| | Color | Used for |
+|---|---|---|
+| Background | `#151515` | Bar, st, dmenu, dunst, Neovim and Helix |
+| Border | `#3a3a3a` | Unfocused windows |
+| Text | `#c6c6c6` | Bar and terminal text |
+| Accent | `#3d7ab8` | Focused window, selected tag, dmenu, slock while typing, notifications |
+| Red | `#c25d5d` | Errors, slock after a wrong password, critical notifications |
+
+The colors are set in each program's own config:
+- dwm, dmenu, slock and st: `config.h` in `~/.local/src/<program>` (st's 16 terminal colors are in `colorname`)
+- dunst: `~/.config/dunst/dunstrc`
+- nmtui: `NEWT_COLORS` in `~/.config/x11/xinitrc`
+- Neovim: `~/.config/nvim/colors/steel.lua`
+- [Helix](https://helix-editor.com): `~/.config/helix/themes/steel.toml`, selected in `~/.config/helix/config.toml`. The script doesn't install Helix; the theme is used once you do.
+
 ## Credits
 - [suckless.org](https://suckless.org) for dwm, st, dmenu, slock and the [patches](https://dwm.suckless.org/patches/)
 - Luke Smith's [dwm](https://github.com/LukeSmithxyz/dwm) (the key bindings), [st](https://github.com/LukeSmithxyz/st), [dwmblocks](https://github.com/LukeSmithxyz/dwmblocks) and [voidrice](https://github.com/LukeSmithxyz/voidrice) (`sysact`, `displayselect`, `dmenurecord`, `maimpick` and `setbg`)
-- [morhetz/gruvbox](https://github.com/morhetz/gruvbox) and [gruvbox wallpapers](https://gruvbox-wallpapers.pages.dev/)
+- The wallpaper is ["Cosmic Cliffs" in the Carina Nebula](https://science.nasa.gov/asset/webb/cosmic-cliffs-in-the-carina-nebula-nircam-and-miri-composite-image/) by NASA, ESA, CSA and STScI, taken by the James Webb Space Telescope (public domain)

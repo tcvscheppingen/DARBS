@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# dwm Auto Rice - Gruvbox Theme
+# DWM Auto Rice Bootstrapping Script (DARBS)
 # For Artix with dinit. Uses elogind for the login session and turnstile
 # for user services (PipeWire and the D-Bus session bus).
 # Always check the contents of a script before running it.
@@ -110,6 +110,6 @@ if [ ${#MISSING_SERVICES[@]} -gt 0 ]; then
     echo "These dinit services were not found, so they are not enabled: ${MISSING_SERVICES[*]}" >&2
 fi
 report_backup
-echo "Installed Gruvbox dotfiles successfully"
+echo "Installed the DARBS dotfiles successfully"
 echo "Reboot so elogind, turnstile, PipeWire, NetworkManager and Bluetooth start"
 echo "No sound after the reboot (the bar shows \"vol dummy\")? Run sound-fix in a terminal"

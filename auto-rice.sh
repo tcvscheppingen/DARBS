@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# dwm Auto Rice - Gruvbox Theme
+# DWM Auto Rice Bootstrapping Script (DARBS)
 # For Arch and Arch based distributions (EndeavourOS, CachyOS, ...) and Fedora.
 # Always check the contents of a script before running it.
 
@@ -108,6 +108,6 @@ build_suckless
 offer_login
 
 report_backup
-echo "Installed Gruvbox dotfiles successfully"
+echo "Installed the DARBS dotfiles successfully"
 echo "Reboot, or log out and log in again, so PipeWire, NetworkManager and Bluetooth start"
 echo "No sound after that (the bar shows \"vol dummy\")? Run sound-fix in a terminal"
