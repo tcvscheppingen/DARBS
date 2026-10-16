@@ -2,15 +2,13 @@
 
 ![dwm with a floating fastfetch window, Neovim and a shell](screenshot.png)
 
-My dotfiles for dwm, st, dmenu, slock, dwmblocks and dunst in Steel, a plain palette of neutral greys with one steel-blue accent (see [Colors](#colors)): [dwm](https://dwm.suckless.org) 6.8 with the vanitygaps, swallow, stacker, statuscmd and systray patches, 3px borders and a plain text status bar you can click. st has scrollback, transparency, clickable URLs and more.
-
-The install scripts support Arch (and Arch based distributions), Fedora and Artix with dinit.
+My dotfiles for dwm, st, dmenu, slock, dwmblocks and dunst, with Neovim and Helix themes. Everything uses **Steel**: neutral greys with one steel-blue accent. dwm 6.8 has gaps, extra layouts, window swallowing and a plain text status bar you can click; st has scrollback, transparency and clickable URLs.
 
 ![Opening terminals, switching layouts and clicking the status bar](demo.gif)
 
-## Installation
+## Install
 
-**Always check the contents of a script before running it.** Run it as your own user, not as root; it uses `sudo` where needed.
+For Arch and Arch based distributions, Fedora, and Artix with dinit. **Read a script before you run it.** Run it as your own user, not as root; it uses `sudo` where needed.
 
 ```bash
 git clone https://github.com/tcvscheppingen/DARBS.git
@@ -19,67 +17,14 @@ cd DARBS
 ```
 
 Then reboot. The script:
-- installs Xorg, the xcompmgr compositor, PipeWire, NetworkManager, Bluetooth, dunst, xss-lock, xwallpaper, unclutter, fonts, LibreWolf, Thunar, Neovim and the build dependencies (see `common.sh` and `auto-rice.sh` for the package lists)
-- on Arch and Artix, installs the Vulkan and hardware video decoding drivers for Intel and AMD GPUs it finds (NVIDIA drivers are not installed)
+- installs Xorg, PipeWire, NetworkManager, Bluetooth, fonts, Neovim, Thunar and LibreWolf, plus the Intel or AMD GPU drivers it finds (not NVIDIA)
 - backs up the configs it replaces to `~/.config/darbs-backup-<date>/`
-- copies the dotfiles to `~/.config` and `~/.local`, then builds dwm, st, dmenu, slock and dwmblocks in `~/.local/src` and installs them to `/usr/local`
-- asks how you want to start dwm: automatically when you log in on TTY1, or from a graphical login screen (LightDM with a minimal greeter), see [Starting dwm on login](#starting-dwm-on-login)
-
-On Fedora it also adds the LibreWolf repo and installs the JetBrains Mono Nerd Font and xwallpaper from their releases. On Artix it uses dinit services, and Arch's `[extra]` repo for xss-lock.
+- copies the dotfiles, then builds dwm, st, dmenu, slock and dwmblocks and installs them to `/usr/local`
+- asks how to start dwm: on login on TTY1, or from a minimal LightDM login screen (`RICE_LOGIN=tty|dm|none` answers in advance)
 
 Already have the packages? `./move-config-files.sh` only copies the dotfiles and builds the suckless programs.
 
-### Starting dwm on login
-
-The script asks how you want to start dwm. To answer in advance, for example from another script, set `RICE_LOGIN` to `tty`, `dm` or `none`:
-```bash
-RICE_LOGIN=dm ./auto-rice.sh
-```
-
-**On TTY1, without a display manager** (`tty`): the script adds this to your login profile (`~/.bash_profile` or `~/.zprofile`):
-```bash
-if [ -z "$DISPLAY" ] && [ -n "$XDG_VTNR" ] && [ "$XDG_VTNR" -eq 1 ]; then
-    exec startx "$HOME/.config/x11/xinitrc"
-fi
-```
-`xinitrc` sets the wallpaper and starts xcompmgr, dwmblocks, dunst, the tray applets, unclutter, xss-lock and dwm.
-
-**From a graphical login screen** (`dm`): the script installs LightDM with lightdm-gtk-greeter, and keeps the greeter minimal: the wallpaper, a login box in dark Adwaita and a panel with only the host name, the clock and the power menu (`/etc/lightdm/lightdm-gtk-greeter.conf`). The dwm session (`/usr/share/xsessions/dwm.desktop`) runs `/usr/local/bin/dwm-session`, which runs the same `xinitrc`. LightDM is not enabled when another display manager already starts on boot.
-
-Locking the screen (from `sysact`, after 5 minutes idle and before sleep) runs `lockscreen`: in a session LightDM started, it locks with the LightDM login screen (`dm-tool lock`), and otherwise with slock.
-
-## Patches
-
-The patched source is in `.local/src/dwm`, with the patch files in `patches/`.
-- [vanitygaps](https://dwm.suckless.org/patches/vanitygaps/): gaps in every layout (10px between windows, 30px at the left and right edges) and extra layouts such as bstack, spiral, deck and centered master.
-- [swallow](https://dwm.suckless.org/patches/swallow/): a program started from st takes the terminal's place until it closes.
-- [stacker](https://dwm.suckless.org/patches/stacker/): move windows up and down the stack with the keyboard.
-- [statuscmd](https://dwm.suckless.org/patches/statuscmd/): clicks on the status bar go to dwmblocks, which runs the block's script with the mouse button in `BLOCK_BUTTON`.
-- [systray](https://dwm.suckless.org/patches/systray/): a system tray at the right of the bar.
-
-st in `.local/src/st` is st 0.8.5 with these patches merged into the source, so there are no patch files:
-- scrollback, with the mouse wheel and the keyboard
-- zoom: change the font size with the keyboard
-- alpha: a transparent background (0.8 opacity), drawn by the xcompmgr compositor
-- xresources: font, colors and alpha can be set in Xresources
-- externalpipe, with `st-urlhandler` and `st-copyout`: open or copy a URL, or copy a command's output, from a dmenu list
-- boxdraw, ligatures (with HarfBuzz) and font2 (color emoji from Noto Color Emoji)
-
-**unclutter** is the program that hides an idle mouse cursor, not a dwm patch.
-
-## Status bar
-
-The bar shows the network, a recording indicator, the volume, the battery, used memory, the date and the time. It is drawn by dwmblocks, which runs a script in `~/.local/bin/statusbar` for each block.
-
-| Block | Click |
-|---|---|
-| Network | Set up connections in `nmtui` |
-| Volume | Sound controls in `pulsemixer`; middle click mutes, scrolling changes the volume |
-| Memory | `htop` |
-
-### No sound ("vol dummy")
-
-When the volume block shows `vol dummy`, PipeWire found no sound card and uses its placeholder output. On some laptops with Intel sound that happens because the SOF driver doesn't work. Run `sound-fix` in a terminal: it checks whether that's the case and offers to switch to the older HDA driver (the built-in digital microphones don't work with it). Reboot afterwards. `sound-fix sof` switches back.
+With the LightDM login screen, locking the screen also uses LightDM; otherwise it uses slock.
 
 ## Key bindings
 
@@ -108,6 +53,9 @@ When the volume block shows `vol dummy`, PipeWire found no sound card and uses i
 | `mod + Print` / `mod + Delete` | Start / stop a recording (`dmenurecord`) |
 | `mod` + left / right drag | Move / resize a window |
 
+<details>
+<summary>st key bindings</summary>
+
 In st, `alt` is the modifier:
 
 | Keys | Action |
@@ -119,38 +67,43 @@ In st, `alt` is the modifier:
 | `alt + o` | Copy a command's output |
 | `alt + a` / `alt + s` | More / less opaque |
 
-## Customizing
+</details>
 
-The suckless programs are configured in `config.h`. After editing, rebuild and choose "renew dwm" in `sysact` to restart dwm without closing your windows:
-```bash
-cd ~/.local/src/dwm && make && sudo make install
-```
+## Good to know
 
-- The screen locks after 5 minutes and turns off after 10; change the `xset` lines in `~/.config/x11/xinitrc`.
-- The status bar blocks are in `~/.local/src/dwmblocks/config.h` and their scripts in `~/.local/bin/statusbar`. A script reads the mouse button from `BLOCK_BUTTON`.
-- Notifications are configured in `~/.config/dunst/dunstrc`.
-- The system tray at the right of the bar shows `nm-applet` (network) and `blueman-applet` (Bluetooth), started in `xinitrc`. Programs with a tray icon add theirs there.
+- **Status bar:** click the network for `nmtui`, the volume for `pulsemixer` (middle click mutes, scroll changes it), and memory for `htop`.
+- **No sound?** If the volume shows `vol dummy` on an Intel laptop, run `sound-fix`.
+- **Locking:** after 5 minutes idle, and before sleep. The displays turn off after 10 minutes. The times are the `xset` lines in `~/.config/x11/xinitrc`.
+- **Wallpaper:** `setbg image.jpg` changes it, and `setbg folder` picks a random image from a folder.
+- **Changing dwm:** edit `~/.local/src/dwm/config.h`, run `make && sudo make install` there, then "renew dwm" in `sysact` restarts dwm without closing your windows. The same goes for st, dmenu, slock and dwmblocks.
 
-## Colors
+<details>
+<summary>Patches</summary>
 
-Steel is a small palette made for DARBS: near-black greys for the bar, the terminal and unfocused borders, and one steel blue (`#3d7ab8`) for the focused window, the selected tag and the selection in dmenu. The terminal colors are muted and cool; red and gold only show up for errors and warnings.
+dwm (patch files in `.local/src/dwm/patches/`):
+- [vanitygaps](https://dwm.suckless.org/patches/vanitygaps/): gaps and extra layouts (bstack, spiral, deck, centered master)
+- [swallow](https://dwm.suckless.org/patches/swallow/): a program started from st takes the terminal's place until it closes
+- [stacker](https://dwm.suckless.org/patches/stacker/): move windows up and down the stack
+- [statuscmd](https://dwm.suckless.org/patches/statuscmd/): clickable status bar blocks (scripts in `~/.local/bin/statusbar`)
+- [systray](https://dwm.suckless.org/patches/systray/): a system tray in the bar
 
-| | Color | Used for |
+st 0.8.5, with the patches merged into the source: scrollback, zoom, alpha (transparency through xcompmgr), xresources, externalpipe (URLs and command output from a dmenu list), boxdraw, ligatures and color emoji.
+
+</details>
+
+## Palette
+
+| | Color | |
 |---|---|---|
-| Background | `#151515` | Bar, st, dmenu, dunst, Neovim and Helix |
+| Background | `#151515` | Bar, terminal, menus, editors |
 | Border | `#3a3a3a` | Unfocused windows |
-| Text | `#c6c6c6` | Bar and terminal text |
-| Accent | `#3d7ab8` | Focused window, selected tag, dmenu, slock while typing, notifications |
-| Red | `#c25d5d` | Errors, slock after a wrong password, critical notifications |
+| Text | `#c6c6c6` | |
+| Accent: steel blue | `#3d7ab8` | Focused window, selected tag, dmenu, notifications |
+| Red | `#c25d5d` | Errors, wrong password, critical notifications |
 
-The colors are set in each program's own config:
-- dwm, dmenu, slock and st: `config.h` in `~/.local/src/<program>` (st's 16 terminal colors are in `colorname`)
-- dunst: `~/.config/dunst/dunstrc`
-- nmtui: `NEWT_COLORS` in `~/.config/x11/xinitrc`
-- Neovim: `~/.config/nvim/colors/steel.lua`
-- [Helix](https://helix-editor.com): `~/.config/helix/themes/steel.toml`, selected in `~/.config/helix/config.toml`. The script doesn't install Helix; the theme is used once you do.
+The colors are in each program's `config.h` in `~/.local/src`, in `~/.config/dunst/dunstrc`, and in `~/.config/nvim/colors/steel.lua` and `~/.config/helix/themes/steel.toml`. The script doesn't install [Helix](https://helix-editor.com); the theme is used once you do.
 
 ## Credits
 - [suckless.org](https://suckless.org) for dwm, st, dmenu, slock and the [patches](https://dwm.suckless.org/patches/)
-- Luke Smith's [dwm](https://github.com/LukeSmithxyz/dwm) (the key bindings), [st](https://github.com/LukeSmithxyz/st), [dwmblocks](https://github.com/LukeSmithxyz/dwmblocks) and [voidrice](https://github.com/LukeSmithxyz/voidrice) (`sysact`, `displayselect`, `dmenurecord`, `maimpick` and `setbg`)
-- The wallpaper is ["Cosmic Cliffs" in the Carina Nebula](https://science.nasa.gov/asset/webb/cosmic-cliffs-in-the-carina-nebula-nircam-and-miri-composite-image/) by NASA, ESA, CSA and STScI, taken by the James Webb Space Telescope (public domain)
+- Luke Smith's [dwm](https://github.com/LukeSmithxyz/dwm) (the key bindings), [st](https://github.com/LukeSmithxyz/st), [dwmblocks](https://github.com/LukeSmithxyz/dwmblocks) and [voidrice](https://github.com/LukeSmithxyz/voidrice) scripts
+- Wallpaper: ["Cosmic Cliffs" in the Carina Nebula](https://science.nasa.gov/asset/webb/cosmic-cliffs-in-the-carina-nebula-nircam-and-miri-composite-image/) by NASA, ESA, CSA and STScI (James Webb Space Telescope, public domain)
