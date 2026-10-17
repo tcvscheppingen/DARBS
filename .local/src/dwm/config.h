@@ -136,6 +136,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_w,            spawn,              {.v = (const char*[]){ BROWSER, NULL } } },
 	{ MODKEY|ShiftMask,             XK_w,            spawn,              {.v = (const char*[]){ TERMINAL, "-e", "nmtui", NULL } } },
 	{ MODKEY,                       XK_r,            spawn,              {.v = (const char*[]){ FILEMANAGER, NULL } } },
+	{ MODKEY|ShiftMask,	           	XK_d,            spawn,              {.v = (const char*[]){ "passmenu", NULL } } },
 	{ MODKEY,                       XK_t,            setlayout,          {.v = &layouts[0]} }, /* tile */
 	{ MODKEY|ShiftMask,             XK_t,            setlayout,          {.v = &layouts[1]} }, /* bstack */
 	{ MODKEY,                       XK_y,            setlayout,          {.v = &layouts[2]} }, /* spiral */

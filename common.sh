@@ -28,7 +28,7 @@ ARCH_PACKAGES=(
     maim slop xclip xdotool xdg-user-dirs xdg-utils brightnessctl playerctl psmisc bc file ffmpeg
     ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
     adwaita-icon-theme adwaita-cursors dconf
-    neovim htop pulsemixer thunar librewolf
+    neovim htop pulsemixer thunar librewolf pass
 )
 
 # Vulkan and hardware video decoding (VA-API) drivers for the GPUs in this

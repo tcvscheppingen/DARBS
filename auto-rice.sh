@@ -44,7 +44,7 @@ install_fedora() {
         maim slop xclip xdotool xdg-user-dirs xdg-utils brightnessctl playerctl psmisc bc file /usr/bin/ffmpeg \
         google-noto-sans-fonts google-noto-color-emoji-fonts \
         adwaita-icon-theme adwaita-cursor-theme dconf \
-        neovim htop Thunar librewolf curl tar xz
+        neovim htop Thunar librewolf curl tar xz pass
 
     # Fedora only packages the plain JetBrains Mono, so get the Nerd Font
     # from the nerd-fonts releases
