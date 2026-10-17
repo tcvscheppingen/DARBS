@@ -33,6 +33,7 @@ With the LightDM login screen, locking the screen also uses LightDM; otherwise i
 | Keys | Action |
 |---|---|
 | `mod + Return` / `mod + d` | Terminal / run a program (dmenu) |
+| `mod + shift + d` | Open passmenu password manager (requires `pass` to be set up) |
 | `mod + w` / `mod + shift + w` / `mod + r` | Browser / `nmtui` / file manager |
 | `mod + q` | Close the window |
 | `mod + j/k` / `mod + shift + j/k` | Focus / move the window down or up the stack |
