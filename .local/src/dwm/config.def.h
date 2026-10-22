@@ -129,7 +129,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_equal,        spawn,              SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 15%+; pkill -RTMIN+10 dwmblocks") },
 	{ MODKEY,                       XK_BackSpace,    spawn,              {.v = (const char*[]){ "sysact", NULL } } },
 	{ MODKEY|ShiftMask,             XK_BackSpace,    spawn,              {.v = (const char*[]){ "sysact", NULL } } },
-
+  { MODKEY,                       XK_f,            togglefullscr,      {0} },
 	{ MODKEY,                       XK_Tab,          view,               {0} },
 	{ MODKEY,                       XK_q,            killclient,         {0} },
 	{ MODKEY|ShiftMask,             XK_q,            spawn,              {.v = (const char*[]){ "sysact", NULL } } },

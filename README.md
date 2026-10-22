@@ -53,6 +53,7 @@ With the LightDM login screen, locking the screen also uses LightDM; otherwise i
 | `Print` / `shift + Print` | Screenshot / screenshot menu (`maimpick`) |
 | `mod + Print` / `mod + Delete` | Start / stop a recording (`dmenurecord`) |
 | `mod` + left / right drag | Move / resize a window |
+| `mod + f` | make current window fullscreen |
 
 <details>
 <summary>st key bindings</summary>
@@ -87,6 +88,7 @@ dwm (patch files in `.local/src/dwm/patches/`):
 - [stacker](https://dwm.suckless.org/patches/stacker/): move windows up and down the stack
 - [statuscmd](https://dwm.suckless.org/patches/statuscmd/): clickable status bar blocks (scripts in `~/.local/bin/statusbar`)
 - [systray](https://dwm.suckless.org/patches/systray/): a system tray in the bar
+- [actualfullscreen](https://dwm.suckless.org/patches/actualfullscreen/): make the current window fullscreen
 
 st 0.8.5, with the patches merged into the source: scrollback, zoom, alpha (transparency through xcompmgr), xresources, externalpipe (URLs and command output from a dmenu list), boxdraw, ligatures and color emoji.
 
