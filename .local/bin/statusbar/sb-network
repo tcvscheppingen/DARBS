@@ -12,9 +12,11 @@ if [ -z "$dev" ]; then
     echo 'wifi down'
 elif [ -d "/sys/class/net/$dev/wireless" ]; then
     ssid=$(nmcli -g GENERAL.CONNECTION device show "$dev" 2> /dev/null)
-    # /proc/net/wireless gives the link quality out of 70
-    signal=$(awk -v dev="$dev:" '$1 == dev { printf "%d", $3 * 100 / 70 }' /proc/net/wireless)
-    echo "wifi ${ssid:-$dev} ${signal:-0}%"
+    # NetworkManager's signal strength of the network in use. The kernel's link
+    # quality in /proc/net/wireless reads 0 with some drivers and kernels.
+    signal=$(nmcli -t -f IN-USE,SIGNAL device wifi list --rescan no ifname "$dev" 2> /dev/null \
+        | awk -F: '$1 == "*" { print $2; exit }')
+    echo "wifi ${ssid:-$dev}${signal:+ $signal%}"
 else
     echo "eth $dev"
 fi
