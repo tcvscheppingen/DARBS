@@ -2,10 +2,13 @@
 
 # A dmenu wrapper script for system functions.
 export WM="dwm"
-case "$(readlink -f /sbin/init)" in
-	*systemd*) ctl='systemctl' ;;
-	*) ctl='loginctl' ;;
-esac
+# /run/systemd/system exists only when systemd is the init. readlink on
+# /sbin/init doesn't work on NixOS, where it points into /nix/store.
+if [ -d /run/systemd/system ]; then
+	ctl='systemctl'
+else
+	ctl='loginctl'
+fi
 
 wmpid(){ # This function is needed if there are multiple instances of the window manager.
 	tree="$(pstree -ps $$)"
