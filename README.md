@@ -26,6 +26,40 @@ Already have the packages? `./move-config-files.sh` only copies the dotfiles and
 
 With the LightDM login screen, locking the screen also uses LightDM; otherwise it uses slock.
 
+### NixOS
+
+On NixOS, the module in `nixos/darbs.nix` builds dwm, st, dmenu, slock and dwmblocks from `.local/src` and installs the packages and services. Clone the repo and copy the dotfiles:
+
+```bash
+git clone https://github.com/tcvscheppingen/DARBS.git ~/DARBS
+cd ~/DARBS
+mkdir -p ~/.config ~/.local/bin ~/.local/share
+cp -a .config/. ~/.config/
+cp -a .local/bin/. ~/.local/bin/
+cp .local/share/wallpaper.jpg ~/.local/share/
+ln -sf ~/.local/share/wallpaper.jpg ~/.local/share/bg
+```
+
+Import the module in `/etc/nixos/configuration.nix` and set your user:
+
+```nix
+imports = [
+  ./hardware-configuration.nix
+  /home/you/DARBS/nixos/darbs.nix
+];
+darbs.user = "you";
+```
+
+Run `sudo nixos-rebuild switch`. To start dwm when you log in on TTY1, add this to `~/.bash_profile` (or `~/.zprofile`):
+
+```sh
+if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
+    exec startx "$HOME/.config/x11/xinitrc"
+fi
+```
+
+To change dwm, edit `~/DARBS/.local/src/dwm/config.h`, run `sudo nixos-rebuild switch`, then "renew dwm" in `sysact`. The same goes for st, dmenu, slock and dwmblocks.
+
 ## Key bindings
 
 `mod` is the Super key.
